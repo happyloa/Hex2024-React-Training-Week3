@@ -21,72 +21,79 @@ export default function ProductList({ products, openModal, setisAuth }) {
   };
 
   return (
-    <div className="container">
-      <div className="d-flex justify-content-end align-items-center gap-2 mt-4">
-        {/* 登出按鈕 */}
-        <button
-          type="button"
-          className="btn btn-danger btn-sm"
-          onClick={handleLogout}>
-          登出
-        </button>
-        {/* 建立新產品按鈕 */}
-        <button
-          type="button"
-          className="btn btn-outline-primary btn-sm"
-          onClick={() => openModal({}, "new")}>
-          建立新的產品
-        </button>
+    <div className="container mt-4">
+      <div className="d-flex justify-content-between align-items-center mb-3">
+        <h2 className="fw-bold">產品清單</h2>
+        <div className="d-flex gap-2">
+          {/* 登出按鈕 */}
+          <button
+            type="button"
+            className="btn btn-danger btn-sm"
+            onClick={handleLogout}>
+            登出
+          </button>
+          {/* 建立新產品按鈕 */}
+          <button
+            type="button"
+            className="btn btn-primary btn-sm"
+            onClick={() => openModal({}, "new")}>
+            建立新產品
+          </button>
+        </div>
       </div>
 
-      {/* 產品清單表格 */}
-      <table className="table mt-4">
-        <thead>
-          <tr>
-            <th width="120">分類</th>
-            <th>產品名稱</th>
-            <th width="120">原價</th>
-            <th width="120">售價</th>
-            <th width="100">是否啟用</th>
-            <th width="120">操作</th>
-          </tr>
-        </thead>
-        <tbody>
-          {products.map((product) => (
-            <tr key={product.id}>
-              <td>{product.category}</td>
-              <td>{product.title}</td>
-              <td className="text-end">{product.origin_price}</td>
-              <td className="text-end">{product.price}</td>
-              <td>
-                {product.is_enabled ? (
-                  <span className="text-success">啟用</span>
-                ) : (
-                  <span>未啟用</span>
-                )}
-              </td>
-              <td>
-                <div className="btn-group">
-                  {/* 編輯按鈕 */}
-                  <button
-                    type="button"
-                    className="btn btn-outline-primary btn-sm"
-                    onClick={() => openModal(product, "edit")}>
-                    編輯
-                  </button>
-                  {/* 刪除按鈕 */}
-                  <button
-                    type="button"
-                    className="btn btn-outline-danger btn-sm"
-                    onClick={() => openModal(product, "delete")}>
-                    刪除
-                  </button>
-                </div>
-              </td>
+      {/* Bootstrap 表格容器，支援小螢幕滾動 */}
+      <div className="table-responsive">
+        <table className="table table-bordered table-striped table-hover">
+          <thead className="table-dark">
+            <tr>
+              <th scope="col">分類</th>
+              <th scope="col">產品名稱</th>
+              <th scope="col" className="text-end">
+                原價
+              </th>
+              <th scope="col" className="text-end">
+                售價
+              </th>
+              <th scope="col">狀態</th>
+              <th scope="col">操作</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {products.map((product) => (
+              <tr key={product.id}>
+                <td>{product.category}</td>
+                <td>{product.title}</td>
+                <td className="text-end">${product.origin_price}</td>
+                <td className="text-end">${product.price}</td>
+                <td>
+                  {product.is_enabled ? (
+                    <span className="badge bg-success">啟用</span>
+                  ) : (
+                    <span className="badge bg-secondary">未啟用</span>
+                  )}
+                </td>
+                <td>
+                  <div className="btn-group">
+                    <button
+                      type="button"
+                      className="btn btn-outline-primary btn-sm"
+                      onClick={() => openModal(product, "edit")}>
+                      編輯
+                    </button>
+                    <button
+                      type="button"
+                      className="btn btn-outline-danger btn-sm"
+                      onClick={() => openModal(product, "delete")}>
+                      刪除
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }
