@@ -4,13 +4,11 @@ import axios from "axios";
 const API_BASE = "https://ec-course-api.hexschool.io/v2";
 
 export default function Login({ setisAuth, getProductData }) {
-  // 登入表單的狀態管理
   const [formData, setFormData] = useState({
     username: "",
     password: "",
   });
 
-  // 管理表單的輸入變更
   const handleInputChange = (e) => {
     const { id, value } = e.target;
     setFormData((prevData) => ({
@@ -19,7 +17,6 @@ export default function Login({ setisAuth, getProductData }) {
     }));
   };
 
-  // 登入表單提交
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -28,11 +25,9 @@ export default function Login({ setisAuth, getProductData }) {
       if (response && response.data) {
         const { token, expired } = response.data;
 
-        // 設定 cookie 與 Axios 授權標頭
         document.cookie = `hexToken=${token};expires=${new Date(expired)};`;
         axios.defaults.headers.common.Authorization = token;
 
-        // 驗證成功後，取得產品資料，並將登入狀態設為 true
         await getProductData();
         setisAuth(true);
         alert("登入成功！");
@@ -47,45 +42,55 @@ export default function Login({ setisAuth, getProductData }) {
   };
 
   return (
-    <div className="container login">
-      <div className="row justify-content-center">
-        <h1 className="h3 mb-3 font-weight-normal text-center">請先登入</h1>
-        <div className="col-8">
-          <form id="form" className="form-signin" onSubmit={handleSubmit}>
-            <div className="form-floating mb-3">
+    <div className="container d-flex align-items-center justify-content-center vh-100">
+      <div
+        className="card shadow-lg p-4"
+        style={{ maxWidth: "400px", width: "100%" }}>
+        <div className="card-body">
+          <h1 className="card-title text-center mb-4 fw-bold">登入系統</h1>
+          <form onSubmit={handleSubmit}>
+            <div className="mb-3">
+              <label htmlFor="username" className="form-label fw-bold">
+                Email
+              </label>
               <input
                 type="email"
                 className="form-control"
                 id="username"
-                placeholder="name@example.com"
+                placeholder="請輸入電子郵件"
                 value={formData.username}
                 onChange={handleInputChange}
                 required
                 autoFocus
               />
-              <label htmlFor="username">Email address</label>
             </div>
-            <div className="form-floating">
+            <div className="mb-3">
+              <label htmlFor="password" className="form-label fw-bold">
+                密碼
+              </label>
               <input
                 type="password"
                 className="form-control"
                 id="password"
-                placeholder="Password"
+                placeholder="請輸入密碼"
                 value={formData.password}
                 onChange={handleInputChange}
                 required
               />
-              <label htmlFor="password">Password</label>
             </div>
-            <button className="btn btn-lg btn-primary w-100 mt-3" type="submit">
+            <button type="submit" className="btn btn-primary w-100">
               登入
             </button>
           </form>
         </div>
+        <footer className="text-center mt-4">
+          <small className="text-muted">
+            &copy; 2024~∞ - 六角學院
+            <br />
+            第三週作業 - 熟練 React.js by aaron
+          </small>
+        </footer>
       </div>
-      <footer className="text-center mt-5">
-        <p className="text-muted">&copy; 2024~∞ - 六角學院</p>
-      </footer>
     </div>
   );
 }
