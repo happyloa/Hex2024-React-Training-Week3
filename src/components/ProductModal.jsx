@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import * as bootstrap from "bootstrap";
 
 export default function ProductModal({
@@ -14,9 +14,9 @@ export default function ProductModal({
 }) {
   const modalRef = useRef(null); // Ref 指向 Modal DOM 元素
   const bsModal = useRef(null); // Bootstrap Modal 實例
+  const [isLoading, setIsLoading] = useState(false); // 控制 spinner 顯示狀態
 
   useEffect(() => {
-    // 初始化 Bootstrap Modal，禁用點擊 backdrop 關閉功能
     if (modalRef.current) {
       bsModal.current = new bootstrap.Modal(modalRef.current, {
         backdrop: "static",
@@ -25,7 +25,6 @@ export default function ProductModal({
     }
 
     return () => {
-      // 清理 Bootstrap Modal 實例
       if (bsModal.current) {
         bsModal.current.dispose();
       }
@@ -33,11 +32,23 @@ export default function ProductModal({
   }, []);
 
   useEffect(() => {
-    // 根據需要顯示或隱藏 Modal
     if (modalType && bsModal.current) {
       bsModal.current.show();
     }
   }, [modalType]);
+
+  const handleConfirm = async () => {
+    setIsLoading(true);
+    try {
+      if (modalType === "delete") {
+        await delProductData(templateData.id);
+      } else {
+        await updateProductData(templateData.id);
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <div
@@ -66,7 +77,8 @@ export default function ProductModal({
               className="btn-close bg-light"
               data-bs-dismiss="modal"
               aria-label="Close"
-              onClick={closeModal}></button>
+              onClick={closeModal}
+              disabled={isLoading}></button>
           </div>
           <div className="modal-body">
             {modalType === "delete" ? (
@@ -78,7 +90,6 @@ export default function ProductModal({
             ) : (
               <div className="row">
                 <div className="col-md-4">
-                  {/* 在 modalType 為 "edit" 時顯示主圖 */}
                   {modalType === "edit" && (
                     <div className="mb-3">
                       <label htmlFor="imageUrl" className="form-label fw-bold">
@@ -123,13 +134,15 @@ export default function ProductModal({
                     <div className="d-flex justify-content-between">
                       <button
                         className="btn btn-outline-primary btn-sm"
-                        onClick={handleAddImage}>
+                        onClick={handleAddImage}
+                        disabled={isLoading}>
                         新增圖片
                       </button>
                       {templateData.imagesUrl.length > 0 && (
                         <button
                           className="btn btn-outline-danger btn-sm"
-                          onClick={handleRemoveImage}>
+                          onClick={handleRemoveImage}
+                          disabled={isLoading}>
                           刪除最後一張圖片
                         </button>
                       )}
@@ -148,6 +161,7 @@ export default function ProductModal({
                       placeholder="請輸入標題"
                       value={templateData.title}
                       onChange={handleModalInputChange}
+                      disabled={isLoading}
                     />
                   </div>
                   <div className="mb-3">
@@ -161,6 +175,7 @@ export default function ProductModal({
                       placeholder="請輸入分類"
                       value={templateData.category}
                       onChange={handleModalInputChange}
+                      disabled={isLoading}
                     />
                   </div>
                   <div className="row">
@@ -177,6 +192,7 @@ export default function ProductModal({
                         placeholder="請輸入原價"
                         value={templateData.origin_price}
                         onChange={handleModalInputChange}
+                        disabled={isLoading}
                       />
                     </div>
                     <div className="col-md-6 mb-3">
@@ -190,6 +206,7 @@ export default function ProductModal({
                         placeholder="請輸入售價"
                         value={templateData.price}
                         onChange={handleModalInputChange}
+                        disabled={isLoading}
                       />
                     </div>
                   </div>
@@ -202,7 +219,8 @@ export default function ProductModal({
                       className="form-control"
                       placeholder="請輸入產品描述"
                       value={templateData.description}
-                      onChange={handleModalInputChange}></textarea>
+                      onChange={handleModalInputChange}
+                      disabled={isLoading}></textarea>
                   </div>
                   <div className="form-check mb-3">
                     <input
@@ -211,6 +229,7 @@ export default function ProductModal({
                       type="checkbox"
                       checked={templateData.is_enabled}
                       onChange={handleModalInputChange}
+                      disabled={isLoading}
                     />
                     <label
                       className="form-check-label fw-bold"
@@ -227,24 +246,28 @@ export default function ProductModal({
               type="button"
               className="btn btn-outline-secondary"
               data-bs-dismiss="modal"
-              onClick={closeModal}>
+              onClick={closeModal}
+              disabled={isLoading}>
               取消
             </button>
-            {modalType === "delete" ? (
-              <button
-                type="button"
-                className="btn btn-danger"
-                onClick={() => delProductData(templateData.id)}>
-                刪除
-              </button>
-            ) : (
-              <button
-                type="button"
-                className="btn btn-primary"
-                onClick={() => updateProductData(templateData.id)}>
-                確認
-              </button>
-            )}
+            <button
+              type="button"
+              className={`btn ${
+                modalType === "delete" ? "btn-danger" : "btn-primary"
+              }`}
+              onClick={handleConfirm}
+              disabled={isLoading}>
+              {isLoading ? (
+                <span
+                  className="spinner-border spinner-border-sm text-light"
+                  role="status"
+                  aria-hidden="true"></span>
+              ) : modalType === "delete" ? (
+                "刪除"
+              ) : (
+                "確認"
+              )}
+            </button>
           </div>
         </div>
       </div>

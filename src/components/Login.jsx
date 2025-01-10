@@ -8,6 +8,7 @@ export default function Login({ setisAuth, getProductData }) {
     username: "",
     password: "",
   });
+  const [isLoading, setIsLoading] = useState(false); // 用於顯示 Spinner
 
   const handleInputChange = (e) => {
     const { id, value } = e.target;
@@ -19,6 +20,7 @@ export default function Login({ setisAuth, getProductData }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true); // 開始加載動畫
     try {
       const response = await axios.post(`${API_BASE}/admin/signin`, formData);
 
@@ -30,7 +32,6 @@ export default function Login({ setisAuth, getProductData }) {
 
         await getProductData();
         setisAuth(true);
-        alert("登入成功！");
       } else {
         throw new Error("登入回應格式錯誤，缺少必要的 data 屬性");
       }
@@ -38,6 +39,8 @@ export default function Login({ setisAuth, getProductData }) {
       const errorMessage =
         error.response?.data?.message || "無法處理登入請求，請稍後再試";
       alert("登入失敗: " + errorMessage);
+    } finally {
+      setIsLoading(false); // 結束加載動畫
     }
   };
 
@@ -78,8 +81,19 @@ export default function Login({ setisAuth, getProductData }) {
                 required
               />
             </div>
-            <button type="submit" className="btn btn-primary w-100">
-              登入
+            <button
+              type="submit"
+              className="btn btn-primary w-100"
+              disabled={isLoading}>
+              {isLoading ? (
+                <div
+                  className="spinner-border spinner-border-sm text-light"
+                  role="status">
+                  <span className="visually-hidden">Loading...</span>
+                </div>
+              ) : (
+                "登入"
+              )}
             </button>
           </form>
         </div>

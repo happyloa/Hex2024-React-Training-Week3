@@ -1,20 +1,25 @@
+import { useState } from "react";
 import axios from "axios";
 
 export default function ProductList({ products, openModal, setisAuth }) {
+  const [isLoading, setIsLoading] = useState(false); // 控制 spinner 顯示狀態
+
   // 處理登出按鈕點擊事件
   const handleLogout = async () => {
     try {
+      setIsLoading(true);
       await axios.post("https://ec-course-api.hexschool.io/v2/logout");
       document.cookie =
         "hexToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
       setisAuth(false);
-      alert("登出成功！");
+      console.log("登出成功！");
     } catch (error) {
       console.error(
         "登出失敗:",
         error.response?.data?.message || error.message
       );
-      alert("登出失敗，請稍後再試！");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -26,13 +31,23 @@ export default function ProductList({ products, openModal, setisAuth }) {
           <button
             type="button"
             className="btn btn-danger btn-sm"
-            onClick={handleLogout}>
-            登出
+            onClick={handleLogout}
+            disabled={isLoading}>
+            {isLoading ? (
+              <div
+                className="spinner-border spinner-border-sm text-light"
+                role="status">
+                <span className="visually-hidden">Loading...</span>
+              </div>
+            ) : (
+              "登出"
+            )}
           </button>
           <button
             type="button"
             className="btn btn-primary btn-sm"
-            onClick={() => openModal({}, "new")}>
+            onClick={() => openModal({}, "new")}
+            disabled={isLoading}>
             建立新產品
           </button>
         </div>
@@ -58,37 +73,47 @@ export default function ProductList({ products, openModal, setisAuth }) {
             </tr>
           </thead>
           <tbody>
-            {products.map((product) => (
-              <tr key={product.id}>
-                <td>{product.category}</td>
-                <td>{product.title}</td>
-                <td className="text-end">${product.origin_price}</td>
-                <td className="text-end">${product.price}</td>
-                <td>
-                  {product.is_enabled ? (
-                    <span className="badge bg-success">啟用</span>
-                  ) : (
-                    <span className="badge bg-secondary">未啟用</span>
-                  )}
-                </td>
-                <td>
-                  <div className="btn-group">
-                    <button
-                      type="button"
-                      className="btn btn-outline-primary btn-sm"
-                      onClick={() => openModal(product, "edit")}>
-                      編輯
-                    </button>
-                    <button
-                      type="button"
-                      className="btn btn-outline-danger btn-sm"
-                      onClick={() => openModal(product, "delete")}>
-                      刪除
-                    </button>
+            {isLoading ? (
+              <tr>
+                <td colSpan="6" className="text-center">
+                  <div className="spinner-border text-primary" role="status">
+                    <span className="visually-hidden">Loading...</span>
                   </div>
                 </td>
               </tr>
-            ))}
+            ) : (
+              products.map((product) => (
+                <tr key={product.id}>
+                  <td>{product.category}</td>
+                  <td>{product.title}</td>
+                  <td className="text-end">${product.origin_price}</td>
+                  <td className="text-end">${product.price}</td>
+                  <td>
+                    {product.is_enabled ? (
+                      <span className="badge bg-success">啟用</span>
+                    ) : (
+                      <span className="badge bg-secondary">未啟用</span>
+                    )}
+                  </td>
+                  <td>
+                    <div className="btn-group">
+                      <button
+                        type="button"
+                        className="btn btn-outline-primary btn-sm"
+                        onClick={() => openModal(product, "edit")}>
+                        編輯
+                      </button>
+                      <button
+                        type="button"
+                        className="btn btn-outline-danger btn-sm"
+                        onClick={() => openModal(product, "delete")}>
+                        刪除
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
       </div>
