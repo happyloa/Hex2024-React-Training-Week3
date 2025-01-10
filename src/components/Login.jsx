@@ -10,7 +10,7 @@ export default function Login({ setisAuth, getProductData }) {
     password: "",
   });
 
-  // 表單輸入變更處理
+  // 管理表單的輸入變更
   const handleInputChange = (e) => {
     const { id, value } = e.target;
     setFormData((prevData) => ({
@@ -19,28 +19,27 @@ export default function Login({ setisAuth, getProductData }) {
     }));
   };
 
-  // 登入表單提交處理
+  // 登入表單提交
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const response = await axios.post(`${API_BASE}/admin/signin`, formData);
 
-      // 驗證回應格式
       if (response && response.data) {
         const { token, expired } = response.data;
 
-        // 設定 cookie 與 Axios 預設授權
+        // 設定 cookie 與 Axios 授權標頭
         document.cookie = `hexToken=${token};expires=${new Date(expired)};`;
         axios.defaults.headers.common.Authorization = token;
 
-        // 驗證成功後，取得產品資料並設定為已登入
+        // 驗證成功後，取得產品資料，並將登入狀態設為 true
         await getProductData();
         setisAuth(true);
+        alert("登入成功！");
       } else {
         throw new Error("登入回應格式錯誤，缺少必要的 data 屬性");
       }
     } catch (error) {
-      // 確保 `error.response` 存在並處理
       const errorMessage =
         error.response?.data?.message || "無法處理登入請求，請稍後再試";
       alert("登入失敗: " + errorMessage);
@@ -50,7 +49,7 @@ export default function Login({ setisAuth, getProductData }) {
   return (
     <div className="container login">
       <div className="row justify-content-center">
-        <h1 className="h3 mb-3 font-weight-normal">請先登入</h1>
+        <h1 className="h3 mb-3 font-weight-normal text-center">請先登入</h1>
         <div className="col-8">
           <form id="form" className="form-signin" onSubmit={handleSubmit}>
             <div className="form-floating mb-3">
@@ -84,7 +83,9 @@ export default function Login({ setisAuth, getProductData }) {
           </form>
         </div>
       </div>
-      <p className="mt-5 mb-3 text-muted">&copy; 2024~∞ - 六角學院</p>
+      <footer className="text-center mt-5">
+        <p className="text-muted">&copy; 2024~∞ - 六角學院</p>
+      </footer>
     </div>
   );
 }

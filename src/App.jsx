@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-
 import axios from "axios";
 
 import "./assets/style.css";
@@ -13,7 +12,6 @@ const API_PATH = "book-rental";
 
 export default function App() {
   // 狀態管理
-  const [formData, setFormData] = useState({ username: "", password: "" });
   const [isAuth, setisAuth] = useState(false);
   const [products, setProducts] = useState([]);
   const [templateData, setTemplateData] = useState({
@@ -31,40 +29,7 @@ export default function App() {
   });
   const [modalType, setModalType] = useState("");
 
-  // 函數：登錄相關
-  const handleInputChange = (e) => {
-    const { id, value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [id]: value,
-    }));
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const response = await axios.post(`${API_BASE}/admin/signin`, formData);
-      const { token, expired } = response.data;
-      document.cookie = `hexToken=${token};expires=${new Date(expired)};`;
-      axios.defaults.headers.common.Authorization = `${token}`;
-      getProductData();
-      setisAuth(true);
-    } catch (error) {
-      alert("登入失敗: " + error.response.data.message);
-    }
-  };
-
-  const checkAdmin = async () => {
-    try {
-      await axios.post(`${API_BASE}/api/user/check`);
-      getProductData();
-      setisAuth(true);
-    } catch (err) {
-      console.log(err.response.data.message);
-    }
-  };
-
-  // 函數：產品相關
+  // 函數：取得產品資料
   const getProductData = async () => {
     try {
       const response = await axios.get(
@@ -72,19 +37,19 @@ export default function App() {
       );
       setProducts(response.data.products);
     } catch (err) {
-      console.error(err.response.data.message);
+      console.error(
+        "取得產品資料失敗:",
+        err.response?.data?.message || err.message
+      );
     }
   };
 
+  // 函數：新增或更新產品資料
   const updateProductData = async (id) => {
-    let product;
-    if (modalType === "edit") {
-      product = `product/${id}`;
-    } else {
-      product = `product`;
-    }
-
-    const url = `${API_BASE}/api/${API_PATH}/admin/${product}`;
+    const url =
+      modalType === "edit"
+        ? `${API_BASE}/api/${API_PATH}/admin/product/${id}`
+        : `${API_BASE}/api/${API_PATH}/admin/product`;
 
     const productData = {
       data: {
@@ -97,39 +62,39 @@ export default function App() {
     };
 
     try {
-      let response;
       if (modalType === "edit") {
-        response = await axios.put(url, productData);
-        console.log("更新成功", response.data);
+        await axios.put(url, productData);
+        console.log("產品更新成功");
       } else {
-        response = await axios.post(url, productData);
-        console.log("新增成功", response.data);
+        await axios.post(url, productData);
+        console.log("產品新增成功");
       }
-      setModalType(""); // 關閉 Modal
+      setModalType("");
       getProductData();
     } catch (err) {
-      if (modalType === "edit") {
-        console.error("更新失敗", err.response.data.message);
-      } else {
-        console.error("新增失敗", err.response.data.message);
-      }
+      console.error(
+        modalType === "edit" ? "更新失敗:" : "新增失敗:",
+        err.response?.data?.message || err.message
+      );
     }
   };
 
+  // 函數：刪除產品資料
   const delProductData = async (id) => {
     try {
-      const response = await axios.delete(
-        `${API_BASE}/api/${API_PATH}/admin/product/${id}`
-      );
-      console.log("刪除成功", response.data);
-      setModalType(""); // 關閉 Modal
+      await axios.delete(`${API_BASE}/api/${API_PATH}/admin/product/${id}`);
+      console.log("產品刪除成功");
+      setModalType("");
       getProductData();
     } catch (err) {
-      console.error("刪除失敗", err.response.data.message);
+      console.error(
+        "刪除產品失敗:",
+        err.response?.data?.message || err.message
+      );
     }
   };
 
-  // 函數：Modal 操作
+  // 函數：開啟 Modal
   const openModal = (product, type) => {
     setTemplateData({
       id: product.id || "",
@@ -147,24 +112,40 @@ export default function App() {
     setModalType(type);
   };
 
+  // 函數：關閉 Modal
   const closeModal = () => {
     setModalType("");
   };
 
+  // 初始驗證登入狀態
   useEffect(() => {
     const token = document.cookie.replace(
       /(?:(?:^|.*;\s*)hexToken\s*=\s*([^;]*).*$)|^.*$/,
       "$1"
     );
     axios.defaults.headers.common.Authorization = token;
-    checkAdmin();
+
+    (async () => {
+      try {
+        await axios.post(`${API_BASE}/api/user/check`);
+        setisAuth(true);
+        getProductData();
+      } catch (err) {
+        console.error("驗證失敗:", err.response?.data?.message || err.message);
+        setisAuth(false);
+      }
+    })();
   }, []);
 
   return (
     <>
       {isAuth ? (
         <>
-          <ProductList products={products} openModal={openModal} />
+          <ProductList
+            products={products}
+            openModal={openModal}
+            setisAuth={setisAuth} // 傳遞登出處理函式
+          />
           <ProductModal
             modalType={modalType}
             templateData={templateData}
@@ -217,11 +198,7 @@ export default function App() {
           />
         </>
       ) : (
-        <Login
-          formData={formData}
-          handleInputChange={handleInputChange}
-          handleSubmit={handleSubmit}
-        />
+        <Login setisAuth={setisAuth} getProductData={getProductData} />
       )}
     </>
   );
