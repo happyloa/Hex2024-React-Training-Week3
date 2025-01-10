@@ -144,7 +144,10 @@ export default function Login({ setisAuth, getProductData }) {
           <small className="text-muted">
             &copy; 2024~∞ - 六角學院
             <br />
-            第三週作業 - 熟練 React.js by aaron
+            第三週作業 - 熟練 React.js by{" "}
+            <a href="https://www.worksbyaaron.com" target="_blank">
+              Aaron
+            </a>
           </small>
         </footer>
       </div>
