@@ -12,9 +12,9 @@ export default function ProductModal({
   updateProductData,
   delProductData,
 }) {
-  const modalRef = useRef(null); // Ref 指向 Modal DOM 元素
-  const bsModal = useRef(null); // Bootstrap Modal 實例
-  const [isLoading, setIsLoading] = useState(false); // 控制 spinner 顯示狀態
+  const modalRef = useRef(null);
+  const bsModal = useRef(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     if (modalRef.current) {
@@ -90,26 +90,27 @@ export default function ProductModal({
             ) : (
               <div className="row">
                 <div className="col-md-4">
-                  {modalType === "edit" && (
-                    <div className="mb-3">
-                      <label htmlFor="imageUrl" className="form-label fw-bold">
-                        圖片網址
-                      </label>
-                      <input
-                        type="text"
-                        className="form-control"
-                        id="imageUrl"
-                        placeholder="請輸入圖片連結"
-                        value={templateData.imageUrl}
-                        onChange={handleModalInputChange}
-                      />
+                  <div className="mb-3">
+                    <label htmlFor="imageUrl" className="form-label fw-bold">
+                      主圖網址
+                    </label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      id="imageUrl"
+                      placeholder="請輸入主圖連結"
+                      value={templateData.imageUrl}
+                      onChange={handleModalInputChange}
+                      disabled={isLoading}
+                    />
+                    {templateData.imageUrl && (
                       <img
                         className="img-fluid mt-3 border"
                         src={templateData.imageUrl}
                         alt="主圖"
                       />
-                    </div>
-                  )}
+                    )}
+                  </div>
                   <div>
                     {templateData.imagesUrl.map((image, index) => (
                       <div key={index} className="mb-2">
@@ -178,6 +179,20 @@ export default function ProductModal({
                       disabled={isLoading}
                     />
                   </div>
+                  <div className="mb-3">
+                    <label htmlFor="unit" className="form-label fw-bold">
+                      單位
+                    </label>
+                    <input
+                      id="unit"
+                      type="text"
+                      className="form-control"
+                      placeholder="請輸入單位（例如：本、件、箱）"
+                      value={templateData.unit}
+                      onChange={handleModalInputChange}
+                      disabled={isLoading}
+                    />
+                  </div>
                   <div className="row">
                     <div className="col-md-6 mb-3">
                       <label
@@ -219,6 +234,18 @@ export default function ProductModal({
                       className="form-control"
                       placeholder="請輸入產品描述"
                       value={templateData.description}
+                      onChange={handleModalInputChange}
+                      disabled={isLoading}></textarea>
+                  </div>
+                  <div className="mb-3">
+                    <label htmlFor="content" className="form-label fw-bold">
+                      產品簡介
+                    </label>
+                    <textarea
+                      id="content"
+                      className="form-control"
+                      placeholder="請輸入產品簡介"
+                      value={templateData.content}
                       onChange={handleModalInputChange}
                       disabled={isLoading}></textarea>
                   </div>
