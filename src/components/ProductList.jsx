@@ -4,9 +4,7 @@ export default function ProductList({ products, openModal, setisAuth }) {
   // 處理登出按鈕點擊事件
   const handleLogout = async () => {
     try {
-      // 呼叫 API 執行登出
       await axios.post("https://ec-course-api.hexschool.io/v2/logout");
-      // 清除驗證狀態
       document.cookie =
         "hexToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
       setisAuth(false);
@@ -25,14 +23,12 @@ export default function ProductList({ products, openModal, setisAuth }) {
       <div className="d-flex justify-content-between align-items-center mb-3">
         <h2 className="fw-bold">產品清單</h2>
         <div className="d-flex gap-2">
-          {/* 登出按鈕 */}
           <button
             type="button"
             className="btn btn-danger btn-sm"
             onClick={handleLogout}>
             登出
           </button>
-          {/* 建立新產品按鈕 */}
           <button
             type="button"
             className="btn btn-primary btn-sm"
@@ -43,8 +39,10 @@ export default function ProductList({ products, openModal, setisAuth }) {
       </div>
 
       {/* Bootstrap 表格容器，支援小螢幕滾動 */}
-      <div className="table-responsive">
-        <table className="table table-bordered table-striped table-hover">
+      <div className="table-responsive" style={{ maxWidth: "100%" }}>
+        <table
+          className="table table-bordered table-striped table-hover"
+          style={{ minWidth: "900px", whiteSpace: "nowrap" }}>
           <thead className="table-dark">
             <tr>
               <th scope="col">分類</th>
