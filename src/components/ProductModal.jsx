@@ -77,27 +77,31 @@ export default function ProductModal({
               </p>
             ) : (
               <div className="row">
+                {/* 左側：圖片輸入區塊 */}
                 <div className="col-sm-4">
-                  <div className="mb-3">
-                    <label htmlFor="imageUrl" className="form-label">
-                      輸入圖片網址
-                    </label>
-                    <input
-                      type="text"
-                      className="form-control"
-                      id="imageUrl"
-                      placeholder="請輸入圖片連結"
-                      value={templateData.imageUrl}
-                      onChange={handleModalInputChange}
-                    />
-                  </div>
-                  <img
-                    className="img-fluid mb-3"
-                    src={templateData.imageUrl}
-                    alt="主圖"
-                  />
+                  {/* 在 modalType 為 "edit" 時顯示主圖 */}
+                  {modalType === "edit" && (
+                    <div className="mb-3">
+                      <label htmlFor="imageUrl" className="form-label">
+                        輸入圖片網址
+                      </label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        id="imageUrl"
+                        placeholder="請輸入圖片連結"
+                        value={templateData.imageUrl}
+                        onChange={handleModalInputChange}
+                      />
+                      <img
+                        className="img-fluid mt-3"
+                        src={templateData.imageUrl}
+                        alt="主圖"
+                      />
+                    </div>
+                  )}
+                  {/* 多圖輸入 */}
                   <div>
-                    {/* 多圖輸入 */}
                     {templateData.imagesUrl.map((image, index) => (
                       <div key={index} className="mb-2">
                         <input
@@ -134,6 +138,7 @@ export default function ProductModal({
                     </div>
                   </div>
                 </div>
+                {/* 右側：表單輸入區塊 */}
                 <div className="col-sm-8">
                   <div className="mb-3">
                     <label htmlFor="title" className="form-label">
