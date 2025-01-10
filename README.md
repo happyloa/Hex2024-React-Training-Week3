@@ -1,3 +1,4 @@
+
 ![](https://i.imgur.com/QMkKWmC.png)
 
 # 六角 2024 React 作品實戰冬季班第三週作業 - 熟練 React.js
@@ -67,9 +68,9 @@ src
 
 ```
 src/components
-├── Login.jsx                       登入表單
-├── ProductList.jsx                 商品列表
-└── ProductModal.jsx                編輯、新增、刪除商品的 Modal
+├── Login.jsx                        登入表單
+├── ProductList.jsx                  商品列表
+└── ProductModal.jsx                 編輯、新增、刪除商品的 Modal
 ```
 
 ```
