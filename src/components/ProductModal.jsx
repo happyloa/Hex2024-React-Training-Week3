@@ -77,55 +77,92 @@ export default function ProductModal({
               </p>
             ) : (
               <div className="row">
-                <div className="row">
-                  <div className="col-sm-4">
-                    <div className="mb-2">
-                      <label htmlFor="imageUrl" className="form-label">
-                        輸入圖片網址
-                      </label>
-                      <input
-                        type="text"
-                        className="form-control"
-                        id="imageUrl"
-                        placeholder="請輸入圖片連結"
-                        value={templateData.imageUrl}
-                        onChange={handleModalInputChange}
-                      />
-                    </div>
-                    <img
-                      className="img-fluid"
-                      src={templateData.imageUrl}
-                      alt="主圖"
+                <div className="col-sm-4">
+                  <div className="mb-3">
+                    <label htmlFor="imageUrl" className="form-label">
+                      輸入圖片網址
+                    </label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      id="imageUrl"
+                      placeholder="請輸入圖片連結"
+                      value={templateData.imageUrl}
+                      onChange={handleModalInputChange}
                     />
                   </div>
-                  <div className="col-sm-8">
-                    <div className="mb-3">
-                      <label htmlFor="title" className="form-label">
-                        標題
-                      </label>
-                      <input
-                        id="title"
-                        type="text"
-                        className="form-control"
-                        placeholder="請輸入標題"
-                        value={templateData.title}
-                        onChange={handleModalInputChange}
-                      />
+                  <img
+                    className="img-fluid mb-3"
+                    src={templateData.imageUrl}
+                    alt="主圖"
+                  />
+                  <div>
+                    {/* 多圖輸入 */}
+                    {templateData.imagesUrl.map((image, index) => (
+                      <div key={index} className="mb-2">
+                        <input
+                          type="text"
+                          className="form-control mb-2"
+                          value={image}
+                          onChange={(e) =>
+                            handleImageChange(index, e.target.value)
+                          }
+                          placeholder={`圖片網址 ${index + 1}`}
+                        />
+                        {image && (
+                          <img
+                            src={image}
+                            alt={`副圖 ${index + 1}`}
+                            className="img-thumbnail mb-2"
+                          />
+                        )}
+                      </div>
+                    ))}
+                    <div className="d-flex justify-content-between">
+                      <button
+                        className="btn btn-outline-primary btn-sm"
+                        onClick={handleAddImage}>
+                        新增圖片
+                      </button>
+                      {templateData.imagesUrl.length > 0 && (
+                        <button
+                          className="btn btn-outline-danger btn-sm"
+                          onClick={handleRemoveImage}>
+                          刪除最後一張圖片
+                        </button>
+                      )}
                     </div>
-                    <div className="mb-3">
-                      <label htmlFor="category" className="form-label">
-                        分類
-                      </label>
-                      <input
-                        id="category"
-                        type="text"
-                        className="form-control"
-                        placeholder="請輸入分類"
-                        value={templateData.category}
-                        onChange={handleModalInputChange}
-                      />
-                    </div>
-                    <div className="mb-3">
+                  </div>
+                </div>
+                <div className="col-sm-8">
+                  <div className="mb-3">
+                    <label htmlFor="title" className="form-label">
+                      標題
+                    </label>
+                    <input
+                      id="title"
+                      type="text"
+                      className="form-control"
+                      placeholder="請輸入標題"
+                      value={templateData.title}
+                      onChange={handleModalInputChange}
+                    />
+                  </div>
+                  <div className="mb-3">
+                    <label htmlFor="category" className="form-label">
+                      分類
+                    </label>
+                    <input
+                      id="category"
+                      type="text"
+                      className="form-control"
+                      placeholder="請輸入分類"
+                      value={templateData.category}
+                      onChange={handleModalInputChange}
+                    />
+                  </div>
+                  <div className="row">
+                    <div className="col-md-6 mb-3">
                       <label htmlFor="origin_price" className="form-label">
                         原價
                       </label>
@@ -138,7 +175,7 @@ export default function ProductModal({
                         onChange={handleModalInputChange}
                       />
                     </div>
-                    <div className="mb-3">
+                    <div className="col-md-6 mb-3">
                       <label htmlFor="price" className="form-label">
                         售價
                       </label>
@@ -151,17 +188,29 @@ export default function ProductModal({
                         onChange={handleModalInputChange}
                       />
                     </div>
-                    <div className="mb-3">
-                      <label htmlFor="description" className="form-label">
-                        產品描述
-                      </label>
-                      <textarea
-                        id="description"
-                        className="form-control"
-                        placeholder="請輸入產品描述"
-                        value={templateData.description}
-                        onChange={handleModalInputChange}></textarea>
-                    </div>
+                  </div>
+                  <div className="mb-3">
+                    <label htmlFor="description" className="form-label">
+                      產品描述
+                    </label>
+                    <textarea
+                      id="description"
+                      className="form-control"
+                      placeholder="請輸入產品描述"
+                      value={templateData.description}
+                      onChange={handleModalInputChange}></textarea>
+                  </div>
+                  <div className="form-check mb-3">
+                    <input
+                      id="is_enabled"
+                      className="form-check-input"
+                      type="checkbox"
+                      checked={templateData.is_enabled}
+                      onChange={handleModalInputChange}
+                    />
+                    <label className="form-check-label" htmlFor="is_enabled">
+                      是否啟用
+                    </label>
                   </div>
                 </div>
               </div>
