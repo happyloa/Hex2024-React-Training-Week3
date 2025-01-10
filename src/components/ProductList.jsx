@@ -8,9 +8,8 @@ export default function ProductList({ products, openModal }) {
       <div className="text-end mt-4">
         <button
           type="button"
-          className="btn btn-primary"
-          onClick={() => openModal({}, "new")} // 點擊後開啟新增產品的 Modal
-        >
+          className="btn btn-outline-primary btn-sm"
+          onClick={() => openModal({}, "new")}>
           建立新的產品
         </button>
       </div>
@@ -46,8 +45,7 @@ export default function ProductList({ products, openModal }) {
                   <button
                     type="button"
                     className="btn btn-outline-primary btn-sm"
-                    onClick={() => openModal(product, "edit")} // 點擊後開啟編輯產品的 Modal
-                  >
+                    onClick={() => openModal(product, "edit")}>
                     編輯
                   </button>
                   {/* 刪除按鈕 */}

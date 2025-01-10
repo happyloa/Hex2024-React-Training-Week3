@@ -24,17 +24,26 @@ export default function Login({ setisAuth, getProductData }) {
     e.preventDefault();
     try {
       const response = await axios.post(`${API_BASE}/admin/signin`, formData);
-      const { token, expired } = response.data;
 
-      // 設定 cookie 與 Axios 預設授權
-      document.cookie = `hexToken=${token};expires=${new Date(expired)};`;
-      axios.defaults.headers.common.Authorization = token;
+      // 驗證回應格式
+      if (response && response.data) {
+        const { token, expired } = response.data;
 
-      // 驗證成功後，取得產品資料並設定為已登入
-      await getProductData();
-      setisAuth(true);
+        // 設定 cookie 與 Axios 預設授權
+        document.cookie = `hexToken=${token};expires=${new Date(expired)};`;
+        axios.defaults.headers.common.Authorization = token;
+
+        // 驗證成功後，取得產品資料並設定為已登入
+        await getProductData();
+        setisAuth(true);
+      } else {
+        throw new Error("登入回應格式錯誤，缺少必要的 data 屬性");
+      }
     } catch (error) {
-      alert("登入失敗: " + error.response.data.message);
+      // 確保 `error.response` 存在並處理
+      const errorMessage =
+        error.response?.data?.message || "無法處理登入請求，請稍後再試";
+      alert("登入失敗: " + errorMessage);
     }
   };
 

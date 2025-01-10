@@ -1,7 +1,7 @@
-import React, { useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import * as bootstrap from "bootstrap";
 
-function ProductModal({
+export default function ProductModal({
   modalType,
   templateData,
   handleModalInputChange,
@@ -44,7 +44,6 @@ function ProductModal({
       id="productModal"
       tabIndex="-1"
       aria-labelledby="productModalLabel"
-      aria-hidden="true"
       ref={modalRef}>
       <div className="modal-dialog modal-xl">
         <div className="modal-content border-0">
@@ -78,8 +77,93 @@ function ProductModal({
               </p>
             ) : (
               <div className="row">
-                {/* 表單內容 */}
-                {/* 主圖片、標題、分類、描述等表單欄位 */}
+                <div className="row">
+                  <div className="col-sm-4">
+                    <div className="mb-2">
+                      <label htmlFor="imageUrl" className="form-label">
+                        輸入圖片網址
+                      </label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        id="imageUrl"
+                        placeholder="請輸入圖片連結"
+                        value={templateData.imageUrl}
+                        onChange={handleModalInputChange}
+                      />
+                    </div>
+                    <img
+                      className="img-fluid"
+                      src={templateData.imageUrl}
+                      alt="主圖"
+                    />
+                  </div>
+                  <div className="col-sm-8">
+                    <div className="mb-3">
+                      <label htmlFor="title" className="form-label">
+                        標題
+                      </label>
+                      <input
+                        id="title"
+                        type="text"
+                        className="form-control"
+                        placeholder="請輸入標題"
+                        value={templateData.title}
+                        onChange={handleModalInputChange}
+                      />
+                    </div>
+                    <div className="mb-3">
+                      <label htmlFor="category" className="form-label">
+                        分類
+                      </label>
+                      <input
+                        id="category"
+                        type="text"
+                        className="form-control"
+                        placeholder="請輸入分類"
+                        value={templateData.category}
+                        onChange={handleModalInputChange}
+                      />
+                    </div>
+                    <div className="mb-3">
+                      <label htmlFor="origin_price" className="form-label">
+                        原價
+                      </label>
+                      <input
+                        id="origin_price"
+                        type="number"
+                        className="form-control"
+                        placeholder="請輸入原價"
+                        value={templateData.origin_price}
+                        onChange={handleModalInputChange}
+                      />
+                    </div>
+                    <div className="mb-3">
+                      <label htmlFor="price" className="form-label">
+                        售價
+                      </label>
+                      <input
+                        id="price"
+                        type="number"
+                        className="form-control"
+                        placeholder="請輸入售價"
+                        value={templateData.price}
+                        onChange={handleModalInputChange}
+                      />
+                    </div>
+                    <div className="mb-3">
+                      <label htmlFor="description" className="form-label">
+                        產品描述
+                      </label>
+                      <textarea
+                        id="description"
+                        className="form-control"
+                        placeholder="請輸入產品描述"
+                        value={templateData.description}
+                        onChange={handleModalInputChange}></textarea>
+                    </div>
+                  </div>
+                </div>
               </div>
             )}
           </div>
@@ -112,5 +196,3 @@ function ProductModal({
     </div>
   );
 }
-
-export default ProductModal;
