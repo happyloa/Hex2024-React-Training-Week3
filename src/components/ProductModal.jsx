@@ -16,9 +16,10 @@ export default function ProductModal({
   const bsModal = useRef(null); // Bootstrap Modal 實例
 
   useEffect(() => {
-    // 初始化 Bootstrap Modal
+    // 初始化 Bootstrap Modal，禁用點擊 backdrop 關閉功能
     if (modalRef.current) {
       bsModal.current = new bootstrap.Modal(modalRef.current, {
+        backdrop: "static",
         keyboard: false,
       });
     }
@@ -46,44 +47,42 @@ export default function ProductModal({
       aria-labelledby="productModalLabel"
       ref={modalRef}>
       <div className="modal-dialog modal-xl">
-        <div className="modal-content border-0">
+        <div className="modal-content border-0 shadow-lg">
           <div
             className={`modal-header ${
-              modalType === "delete" ? "bg-danger" : "bg-dark"
-            } text-white`}>
+              modalType === "delete"
+                ? "bg-danger text-white"
+                : "bg-dark text-white"
+            }`}>
             <h5 id="productModalLabel" className="modal-title">
-              <span>
-                {modalType === "delete"
-                  ? "刪除產品"
-                  : modalType === "edit"
-                  ? "編輯產品"
-                  : "新增產品"}
-              </span>
+              {modalType === "delete"
+                ? "刪除產品"
+                : modalType === "edit"
+                ? "編輯產品"
+                : "新增產品"}
             </h5>
             <button
               type="button"
-              className="btn-close"
+              className="btn-close bg-light"
               data-bs-dismiss="modal"
               aria-label="Close"
               onClick={closeModal}></button>
           </div>
           <div className="modal-body">
-            {/* 根據 modalType 渲染不同內容 */}
             {modalType === "delete" ? (
-              <p className="h4">
+              <p className="h5">
                 確定要刪除
-                <span className="text-danger">{templateData.title}</span>
+                <span className="text-danger"> {templateData.title} </span>
                 嗎?
               </p>
             ) : (
               <div className="row">
-                {/* 左側：圖片輸入區塊 */}
-                <div className="col-sm-4">
+                <div className="col-md-4">
                   {/* 在 modalType 為 "edit" 時顯示主圖 */}
                   {modalType === "edit" && (
                     <div className="mb-3">
-                      <label htmlFor="imageUrl" className="form-label">
-                        輸入圖片網址
+                      <label htmlFor="imageUrl" className="form-label fw-bold">
+                        圖片網址
                       </label>
                       <input
                         type="text"
@@ -94,13 +93,12 @@ export default function ProductModal({
                         onChange={handleModalInputChange}
                       />
                       <img
-                        className="img-fluid mt-3"
+                        className="img-fluid mt-3 border"
                         src={templateData.imageUrl}
                         alt="主圖"
                       />
                     </div>
                   )}
-                  {/* 多圖輸入 */}
                   <div>
                     {templateData.imagesUrl.map((image, index) => (
                       <div key={index} className="mb-2">
@@ -138,10 +136,9 @@ export default function ProductModal({
                     </div>
                   </div>
                 </div>
-                {/* 右側：表單輸入區塊 */}
-                <div className="col-sm-8">
+                <div className="col-md-8">
                   <div className="mb-3">
-                    <label htmlFor="title" className="form-label">
+                    <label htmlFor="title" className="form-label fw-bold">
                       標題
                     </label>
                     <input
@@ -154,7 +151,7 @@ export default function ProductModal({
                     />
                   </div>
                   <div className="mb-3">
-                    <label htmlFor="category" className="form-label">
+                    <label htmlFor="category" className="form-label fw-bold">
                       分類
                     </label>
                     <input
@@ -168,7 +165,9 @@ export default function ProductModal({
                   </div>
                   <div className="row">
                     <div className="col-md-6 mb-3">
-                      <label htmlFor="origin_price" className="form-label">
+                      <label
+                        htmlFor="origin_price"
+                        className="form-label fw-bold">
                         原價
                       </label>
                       <input
@@ -181,7 +180,7 @@ export default function ProductModal({
                       />
                     </div>
                     <div className="col-md-6 mb-3">
-                      <label htmlFor="price" className="form-label">
+                      <label htmlFor="price" className="form-label fw-bold">
                         售價
                       </label>
                       <input
@@ -195,7 +194,7 @@ export default function ProductModal({
                     </div>
                   </div>
                   <div className="mb-3">
-                    <label htmlFor="description" className="form-label">
+                    <label htmlFor="description" className="form-label fw-bold">
                       產品描述
                     </label>
                     <textarea
@@ -213,7 +212,9 @@ export default function ProductModal({
                       checked={templateData.is_enabled}
                       onChange={handleModalInputChange}
                     />
-                    <label className="form-check-label" htmlFor="is_enabled">
+                    <label
+                      className="form-check-label fw-bold"
+                      htmlFor="is_enabled">
                       是否啟用
                     </label>
                   </div>
