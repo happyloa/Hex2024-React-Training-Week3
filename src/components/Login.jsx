@@ -1,6 +1,43 @@
-import React from "react";
+import { useState } from "react";
+import axios from "axios";
 
-function Login({ formData, handleInputChange, handleSubmit }) {
+const API_BASE = "https://ec-course-api.hexschool.io/v2";
+
+export default function Login({ setisAuth, getProductData }) {
+  // 登入表單的狀態管理
+  const [formData, setFormData] = useState({
+    username: "",
+    password: "",
+  });
+
+  // 表單輸入變更處理
+  const handleInputChange = (e) => {
+    const { id, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [id]: value,
+    }));
+  };
+
+  // 登入表單提交處理
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post(`${API_BASE}/admin/signin`, formData);
+      const { token, expired } = response.data;
+
+      // 設定 cookie 與 Axios 預設授權
+      document.cookie = `hexToken=${token};expires=${new Date(expired)};`;
+      axios.defaults.headers.common.Authorization = token;
+
+      // 驗證成功後，取得產品資料並設定為已登入
+      await getProductData();
+      setisAuth(true);
+    } catch (error) {
+      alert("登入失敗: " + error.response.data.message);
+    }
+  };
+
   return (
     <div className="container login">
       <div className="row justify-content-center">
@@ -42,5 +79,3 @@ function Login({ formData, handleInputChange, handleSubmit }) {
     </div>
   );
 }
-
-export default Login;
